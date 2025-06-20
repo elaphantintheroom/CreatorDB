@@ -84,24 +84,29 @@
 
   <p>Fuel your next campaign with performance-driven insights. See how CreatorDB helps you scale outreach, reduce costs, and unlock creator partnerships that convert.</p>
 
-  <label for="budget">Monthly Influencer Budget ($)</label>
+  <label for="budget">Budget for Advertising This Month ($)</label>
   <input type="number" id="budget" placeholder="e.g. 10000" required>
 
-  <label for="costPerInfluencer">Average Cost per Influencer ($)</label>
-  <input type="number" id="costPerInfluencer" placeholder="e.g. 500" required>
-
-  <label for="engagementRate">Average Engagement Rate (%)<br><small style='font-weight: 400; color: #666;'>Percentage of an influencer's audience who interact — likes, comments, shares, etc.</small></label>
+  <label for="engagementRate">Current Engagement Rate (%)<br><small style='font-weight: 400; color: #666;'>Average engagement across traditional ads or existing campaigns.</small></label>
   <input type="number" id="engagementRate" placeholder="e.g. 3" required>
 
-  <label for="roi">Current ROI (e.g. 2 = 2x ROI)</label>
+  <label for="roi">Current ROI (optional – defaults to <strong>up to</strong> 2x if left blank)</label>
   <input type="number" id="roi" placeholder="e.g. 2" value="2">
 
   <button onclick="calculateResults()">Calculate My Results</button>
 
+  <p style="background: #F3F5F7; padding: 15px; border-left: 4px solid #0162FF; border-radius: 6px; margin-bottom: 20px;"><em>CreatorDB helps brands reduce influencer costs by up to 30%, increase engagement by 60%, and unlock up to <strong>11x ROI</strong> through data-powered campaigns.</em></p>
+
   <div class="results" id="results" style="display:none">
-    <h2>Your CreatorDB Campaign Results</h2>
-    <p><strong>More Influencers Booked:</strong> <span id="moreInfluencers"></span></p>
-    <p><strong>Expected Engagement Rate:</strong> <span id="higherEngagement"></span>%</p>
+    <h2>CreatorDB Advantage</h2>
+    <h2>Results Comparison</h2>
+    <p><strong>Estimated Revenue with Traditional Ads (2x ROI):</strong> $<span id="traditionalRevenue"></span></p>
+    <p style="font-size: 1.3rem;"><strong>Revenue Difference:</strong> $<span id="revenueDifference"></span></p>
+    <p style="font-size: 1.3rem;"><strong>ROI Improvement:</strong> <span id="roiImprovement"></span>x</p>
+    <hr>
+    <h3>CreatorDB-Optimized Campaign</h3>
+    <p><strong>More Influencers Booked:</strong> <span id="moreInfluencers">More budget flexibility (30% savings assumed)</span></p>
+    <p><strong>Expected Engagement Rate:</strong> <span id="expectedEngagement"></span>%</p>
     <p><strong>Projected ROI:</strong> <span id="roiWithCreatorDB"></span>x</p>
     <p><strong>Estimated Revenue:</strong> $<span id="estimatedRevenue"></span></p>
     <p><strong>Engagement Gain:</strong> <span id="engagementGain"></span>% increase over current</p>
@@ -112,27 +117,32 @@
   <script>
     function calculateResults() {
       const budget = parseFloat(document.getElementById("budget").value);
-      const costPerInfluencer = parseFloat(document.getElementById("costPerInfluencer").value);
       const engagementRate = parseFloat(document.getElementById("engagementRate").value);
-      const currentROI = parseFloat(document.getElementById("roi").value);
+      let currentROI = parseFloat(document.getElementById("roi").value);
+      if (isNaN(currentROI)) currentROI = 2;
 
-      if (isNaN(budget) || isNaN(costPerInfluencer) || isNaN(engagementRate)) {
-        alert("Please fill in all fields correctly.");
+      if (isNaN(budget) || isNaN(engagementRate)) {
+        alert("Please fill in Budget and Engagement Rate.");
         return;
       }
 
-      const costWithCreatorDB = costPerInfluencer * 0.7;
-      const influencersWithCreatorDB = Math.floor(budget / costWithCreatorDB);
-      const higherEngagementRate = engagementRate * 1.6;
       const roiWithCreatorDB = 11;
       const estimatedRevenue = budget * roiWithCreatorDB;
       const engagementGain = 60;
+      const expectedEngagementRate = engagementRate * 1.6;
 
-      document.getElementById("moreInfluencers").innerText = influencersWithCreatorDB;
-      document.getElementById("higherEngagement").innerText = higherEngagementRate.toFixed(2);
+      document.getElementById("expectedEngagement").innerText = expectedEngagementRate.toFixed(2);
       document.getElementById("roiWithCreatorDB").innerText = roiWithCreatorDB;
       document.getElementById("estimatedRevenue").innerText = estimatedRevenue.toLocaleString();
       document.getElementById("engagementGain").innerText = engagementGain;
+
+      const traditionalRevenue = budget * currentROI;
+      const revenueDiff = estimatedRevenue - traditionalRevenue;
+      const roiGain = roiWithCreatorDB - currentROI;
+
+      document.getElementById("traditionalRevenue").innerText = traditionalRevenue.toLocaleString();
+      document.getElementById("revenueDifference").innerText = revenueDiff.toLocaleString();
+      document.getElementById("roiImprovement").innerText = roiGain.toFixed(1);
 
       document.getElementById("results").style.display = 'block';
     }
